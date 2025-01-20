@@ -1,16 +1,17 @@
-import { clerkMiddleware } from "@clerk/nextjs/server";
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 
-export default clerkMiddleware({
-  afterAuth(auth, req, evt) {
-    // Check if the user is authenticated
-    if (auth.isSignedIn) {
-      // Redirect authenticated users to "/"
-      const url = new URL(req.nextUrl.origin);
-      url.pathname = "/";
-      return Response.redirect(url.toString());
-    }
-  },
-});
+const isPublicRoute = createRouteMatcher([
+  '/', // 메인 화면은 로그인 없이 접근 가능
+  '/sign-in(.*)', // 로그인 페이지
+  '/sign-up(.*)', // 회원가입 페이지
+]);
+
+
+export default clerkMiddleware(async (auth, request) => {
+  if (!isPublicRoute(request)) {
+    await auth.protect()
+  }
+})
 
 export const config = {
   matcher: [
@@ -19,4 +20,4 @@ export const config = {
     // Always run for API routes
     '/(api|trpc)(.*)',
   ],
-};
+}

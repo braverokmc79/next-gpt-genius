@@ -16,19 +16,23 @@ const HomePage:React.FC = () => {
                     <SignInButton    />
                 </Link> 
                  */}
-                <SignedOut>
+                {/* <SignedOut>
                   <SignInButton>
                     <span  className='btn btn-secondary'>시작하기</span> 
                   </SignInButton>
-
                 </SignedOut>
                 
                 <SignedIn>                 
                   <Link href='/chat' className='btn btn-primary'>
                       채팅 시작
                   </Link>                   
-                </SignedIn>
+                </SignedIn> */}
 
+                <SignedOut>
+                   <Link href='/chat' className='btn btn-secondary'>
+                       시작하기
+                  </Link>      
+                </SignedOut>
 
             </div>
         </div>     
