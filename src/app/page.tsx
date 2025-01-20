@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import React from 'react'
-import {SignedOut,  SignInButton,SignedIn} from '@clerk/nextjs'
+import {SignedOut} from '@clerk/nextjs'
 
 const HomePage:React.FC = () => {
   return (
