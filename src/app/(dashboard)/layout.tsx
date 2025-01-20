@@ -3,7 +3,8 @@ import Sidebar from '../../components/Sidebar';
 
 const layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="drawer">
+    // 디폴트 기본 열린상태로 lg:drawer-open
+    <div className="drawer lg:drawer-open">
          {/* Drawer 토글 input */}
       <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
       
@@ -15,10 +16,7 @@ const layout = ({ children }: { children: React.ReactNode }) => {
 
 
         {/* 페이지별 콘텐츠 렌더링 */}
-        <div className="w-full  bg-base-200 px-8 py-12 min-h-screen">              
-         <label htmlFor="my-drawer-2" 
-            className="btn btn-primary hidden w-52 h-12 text-16 lg:flex 
-                drawer-button items-center justify-center">열기</label>
+        <div className="bg-base-0 px-8 py-12 min-h-screen w-full">              
               {children}
         </div>
 
