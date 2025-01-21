@@ -20,4 +20,8 @@ export default {
     typography,
     daisyui,
   ],
+
+  daisyui: {
+    themes: ["light", "dark", "cupcake" , "winter", "dracula"], // 사용할 테마 설정
+  },
 } satisfies Config;

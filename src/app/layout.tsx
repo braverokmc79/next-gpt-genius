@@ -6,7 +6,7 @@ import {
   SignedIn,
   UserButton
 } from '@clerk/nextjs'
-
+import { koKR } from '@clerk/localizations'
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,20 +26,22 @@ export const metadata: Metadata = {
     OpenAI 기술로 구동되며, 대화, 콘텐츠 제작 등을 한층 더 풍부하게 만들어 드립니다!`,
 };
 
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
-      <html lang="ko"> 
+    <ClerkProvider localization={koKR}>
+
+      <html lang="ko"  data-theme="winter"> 
         <body className={`${geistSans.variable} ${notoSansKR.className} antialiased`}>
-          <div className="flex justify-end">
+          {/* <div className="flex justify-end">
           <SignedIn>
             <UserButton />
           </SignedIn>
-          </div>
+          </div> */}
          {/* <SignedOut>
             <SignInButton />
            </SignedOut>
