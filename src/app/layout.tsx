@@ -1,12 +1,9 @@
 import type { Metadata } from "next";
 import { Geist,  Noto_Sans_KR } from "next/font/google";
 import "./globals.css";
-import {
-  ClerkProvider,
-  SignedIn,
-  UserButton
-} from '@clerk/nextjs'
+import {  ClerkProvider} from '@clerk/nextjs'
 import { koKR } from '@clerk/localizations'
+import Providers from "./providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,24 +31,14 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider localization={koKR}>
-
+      
       <html lang="ko"  data-theme="winter"> 
-        <body className={`${geistSans.variable} ${notoSansKR.className} antialiased`}>
-          {/* <div className="flex justify-end">
-          <SignedIn>
-            <UserButton />
-          </SignedIn>
-          </div> */}
-         {/* <SignedOut>
-            <SignInButton />
-           </SignedOut>
-          <SignedIn>
-            <UserButton />
-          </SignedIn> */}
-
-          {children}
+        <body className={`${geistSans.variable} ${notoSansKR.className} antialiased`}>                 
+          <Providers> {children}</Providers>
         </body>
       </html>
     </ClerkProvider>
   );
 }
+
+

@@ -2,10 +2,10 @@ import Link from 'next/link'
 import React from 'react'
 
 const links=[
-  {href:"/chat", lable:"chat"},
-  {href:"/tours", lable:"tours"},
-  {href:"/tours/new-tour", lable:"new tour"},
-  {href:"/profile", lable:"profile"},
+  {href:"/chat", lable:"채팅"},
+  {href:"/tours", lable:"투어"},
+  {href:"/tours/new-tour", lable:"새로운 투어"},
+  {href:"/profile", lable:"프로필"},
 ]
 
 const NavLinks:React.FC = () => {
