@@ -1,11 +1,24 @@
+import Link from 'next/link'
 import React from 'react'
+
+const links=[
+  {href:"/chat", lable:"chat"},
+  {href:"/tours", lable:"tours"},
+  {href:"/tours/new-tour", lable:"new tour"},
+  {href:"/profile", lable:"profile"},
+]
 
 const NavLinks:React.FC = () => {
   return (
-    <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4">
-        <li><a>Sidebar Item 1</a></li>
-        <li><a>Sidebar Item 2</a></li>
-    </ul> 
+    <div className='menu text-base-content'>
+        {links.map(link => {
+            return <li key={link.href}>
+                <Link href={link.href} className='capitalize' >
+                   {link.lable}
+                </Link>
+            </li>
+      } )}      
+    </div>
   )
 }
 

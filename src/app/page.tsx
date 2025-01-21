@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import React from 'react'
-import {SignedOut} from '@clerk/nextjs'
+import {SignedIn, SignOutButton} from '@clerk/nextjs'
 
 const HomePage:React.FC = () => {
   return (
@@ -28,11 +28,14 @@ const HomePage:React.FC = () => {
                   </Link>                   
                 </SignedIn> */}
 
-                <SignedOut>
-                   <Link href='/chat' className='btn btn-secondary'>
+                  <Link href='/chat' className='btn btn-secondary mr-3'>
                        시작하기
-                  </Link>      
-                </SignedOut>
+                  </Link>   
+                <SignedIn>                 
+                  <SignOutButton>
+                     <span className='btn btn-primary'>로그아웃</span> 
+                  </SignOutButton>
+                </SignedIn>
 
             </div>
         </div>     
