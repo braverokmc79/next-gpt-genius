@@ -11,6 +11,7 @@
   "dependencies": {
     "@clerk/localizations": "^3.9.12",
     "@clerk/nextjs": "^6.9.14",
+    "@huggingface/transformers": "^3.3.1",
     "@prisma/client": "^6.2.1",
     "@tanstack/react-query": "^5.64.2",
     "@tanstack/react-query-devtools": "^5.64.2",
