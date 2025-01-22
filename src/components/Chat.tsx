@@ -64,19 +64,31 @@ const Chat: React.FC = () => {
        style={{ maxHeight: "calc(100vh - 12rem)" }} // 동적으로 높이 설정
      >
       
-        {messages.map((message, index) => (
-          <div
+        {messages.map(({role,content }, index) => {
+          const avatar =role =='user' ? '👤' : '🤖';
+
+          return (<div
             key={index}
             className={`p-4 rounded-lg mb-2 ${
-              message.role === "user"
-                ? "bg-blue-500 text-white text-right"
-                : "bg-gray-200 text-black"
+              role === "user"
+                ? "bg-base-100 text-black text-right"
+                : "bg-base-200 text-black"
             }`}
           >
-            {message.content}
+            {role === "user" ? <><span className="mr-2">{avatar}</span> {content}</> : 
+                        <>
+                        <span className="mr-4">{avatar}</span> 
+                        <p className="max-w-3xl">{content}</p>
+                    </>            
+            }
+                
           </div>
-        ))}
+          );
+        })}
+
+          {isPending ?<span className="loading"></span> :null}      
       </div>
+
 
       {/* 입력 폼 영역 */}
       <form onSubmit={handleSubmit} className="max-w-4xl pt-4">
