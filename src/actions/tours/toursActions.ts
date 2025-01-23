@@ -1,0 +1,139 @@
+"use server";
+import OpenAI from "openai";
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY, // 환경 변수에서 OpenAI API 키를 가져옴
+});
+
+
+
+export interface ToursParams {
+    city: string;
+    country: string;
+}
+
+
+
+interface OpenAIResponse {
+    usage: {
+      total_tokens: number;
+    };
+    choices: {
+      message: {
+        content: string;
+      };
+    }[];
+  }
+  
+
+export interface TourData {
+    city: string;
+    country: string;
+    title: string;
+    description: string;
+    stops: string[];
+}
+
+export interface TourAiResponseData {
+  tour: TourData;
+}
+
+export interface GenerateTourResponseData{
+  tour: TourData | null;
+  tokens: number | string;
+}
+
+ 
+export const generateTourResponse = async ({ city, country }: ToursParams) : Promise<GenerateTourResponseData | null> => {
+    const query = `
+      1. 정확히 이 ${city}가 ${country} 안에 있는지 확인하세요.
+      2. 만약 ${city}와 ${country}가 존재한다면, 가족들이 이 ${city}, ${country}에서 할 수 있는 활동의 목록을 만드세요.
+      3. 목록이 준비되면 하루 동안의 투어를 만드세요. 응답은 다음 JSON 형식이어야 합니다:
+      {
+        "tour": {
+          "city": "${city}",
+          "country": "${country}",
+          "title": "투어의 제목",
+          "description": "도시와 투어에 대한 짧은 설명",
+          "stops": ["정류장 이름", "정류장 이름", "정류장 이름"]
+        }
+      }
+      4. "stops" 속성은 정류장 이름 세 개만 포함해야 합니다.
+      5. 만약 정확한 ${city}에 대한 정보를 찾을 수 없거나, ${city}가 존재하지 않거나,
+         해당 ${city}의 인구가 1명 미만이거나, 또는 해당 ${city}가 ${country}에 위치하지 않은 경우,
+         아래와 같이 응답하세요:
+         { "tour": null }
+      6. 이외의 추가적인 문자는 포함하지 마세요.
+    `;
+  
+    try {
+      // OpenAI API 호출
+      const response = (await openai.chat.completions.create({
+        messages: [
+          { role: 'system', content: 'you are a tour guide' },
+          { role: 'user', content: query },
+        ],
+        model: 'gpt-3.5-turbo',
+        temperature: 0,
+      })) as OpenAIResponse;
+  
+      // 응답 데이터 검증
+      const content = response.choices[0].message.content;
+  
+      console.log(" AI 응답 :",content);
+
+      
+      // JSON 형식 확인 및 파싱
+      if (!content) {
+        console.error("OpenAI 응답이 비어 있습니다.");
+        return null;
+      }
+  
+      let tourData;
+      try {
+        tourData = JSON.parse(content) as TourAiResponseData;
+      } catch (parseError) {
+        console.error("JSON 파싱 오류:", parseError);
+        console.error("응답 내용:", content);
+        return null;
+      }
+  
+      // 결과 값이 null인지 확인
+      if (!tourData.tour) {
+        console.warn("투어 정보를 찾을 수 없습니다.");
+        return null;
+      }
+  
+      return { tour: tourData.tour, tokens: response.usage.total_tokens };
+    } catch (error) {
+      console.error("OpenAI API 호출 중 오류 발생:", error);
+      return null;
+    }
+  };
+  
+  
+
+
+
+  export const getExistingTour = async ({city,country} :ToursParams )=>{
+    console.log("* getExistingTour  :",city,country);
+
+    // const response = await fetch('/api/tours/[id]', {
+    //     method: 'GET',
+    // });
+
+    return {city,country}
+
+}
+
+
+export const createNewTour =async({city, country} :ToursParams ) =>{
+    console.log(" * createNewTour : ",city,country);
+
+    return {city,country};
+}
+
+
+
+
+
