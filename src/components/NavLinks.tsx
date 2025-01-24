@@ -3,8 +3,8 @@ import React from 'react'
 
 const links=[
   {href:"/chat", lable:"채팅"},
-  {href:"/tours", lable:"투어"},
-  {href:"/tours/new-tour", lable:"새로운 투어"},
+  {href:"/tours", lable:"여행"},
+  {href:"/tours/new-tour", lable:"새로운 여행"},
   {href:"/profile", lable:"프로필"},
 ]
 

@@ -1,8 +1,8 @@
-import { GenerateTourResponseData } from '@/actions/tours/toursActions'
+import { TourData } from '@/actions/tours/toursActions'
 import React from 'react'
 
-const TourInfo:React.FC<{tour:GenerateTourResponseData}> = ({tour}) => {
-  const  {title, description, stops} =tour.tour || {};
+const TourInfo:React.FC<{tour:TourData}> = ({tour}) => {
+  const  {title, description, stops} =tour;
 
   return (
     <div className="max-w-2xl">

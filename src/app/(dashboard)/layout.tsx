@@ -15,8 +15,10 @@ const layout = ({ children }: { children: React.ReactNode }) => {
         </label>
 
 
+
+
         {/* 페이지별 콘텐츠 렌더링 */}
-        <div className="bg-base-0 px-8 py-12 min-h-screen w-full">              
+        <div className="bg-base-0 px-8 py-12 min-h-screen w-full bg-base-200">              
               {children}
         </div>
 

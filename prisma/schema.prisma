@@ -24,12 +24,14 @@ model Tour{
   updatedAt DateTime @updatedAt
   city String
   country String
-  titles String
+  title String
   description String @db.Text
   image String ? @db.Text 
   stops Json
   @@unique([city, country])
 
 }
+
+
 
 

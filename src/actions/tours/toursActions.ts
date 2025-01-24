@@ -1,5 +1,6 @@
 "use server";
 import OpenAI from "openai";
+import prisma from "@/utils/db";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY, // 환경 변수에서 OpenAI API 키를 가져옴
@@ -27,11 +28,15 @@ interface OpenAIResponse {
   
 
 export interface TourData {
-    city: string;
-    country: string;
-    title: string;
-    description: string;
-    stops: string[];
+  id?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  city: string;
+  country: string;
+  title: string;
+  description: string;
+  image: string | null;
+  stops: string[];
 }
 
 export interface TourAiResponseData {
@@ -43,19 +48,20 @@ export interface GenerateTourResponseData{
   tokens: number | string;
 }
 
+
  
 export const generateTourResponse = async ({ city, country }: ToursParams) : Promise<GenerateTourResponseData | null> => {
     const query = `
       1. 정확히 이 ${city}가 ${country} 안에 있는지 확인하세요.
-      2. 만약 ${city}와 ${country}가 존재한다면, 가족들이 이 ${city}, ${country}에서 할 수 있는 활동의 목록을 만드세요.
-      3. 목록이 준비되면 하루 동안의 투어를 만드세요. 응답은 다음 JSON 형식이어야 합니다:
+      2. 만약 ${city}와 ${country}가 존재한다면,  ${city}, ${country}에서 할 수 있는 활동의 목록을 만드세요.
+      3. 목록이 준비되면 하루 동안의 여행 가이드를 만드세요. 응답은 다음 JSON 형식이어야 합니다:
       {
         "tour": {
           "city": "${city}",
           "country": "${country}",
           "title": "투어의 제목",
-          "description": "도시와 투어에 대한 짧은 설명",
-          "stops": ["정류장 이름", "정류장 이름", "정류장 이름"]
+          "description": "도시와 투어에 대한 짧은 설명 : 300글자로 작성로 작성할것",
+          "stops": ["정류장 이름 내용을  50글자로 작성", "정류장 이름 내용을  50글자로 작성", "정류장 이름 내용을  50글자로 작성"]
         }
       }
       4. "stops" 속성은 정류장 이름 세 개만 포함해야 합니다.
@@ -73,7 +79,7 @@ export const generateTourResponse = async ({ city, country }: ToursParams) : Pro
           { role: 'system', content: 'you are a tour guide' },
           { role: 'user', content: query },
         ],
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-3.5-turbo', // 사용할 모델 이름 지정 (gpt-4, gpt-3.5-turbo 등)
         temperature: 0,
       })) as OpenAIResponse;
   
@@ -114,24 +120,63 @@ export const generateTourResponse = async ({ city, country }: ToursParams) : Pro
   
 
 
-
+  //등록된 여행이 있는지 확인
   export const getExistingTour = async ({city,country} :ToursParams )=>{
     console.log("* getExistingTour  :",city,country);
 
-    // const response = await fetch('/api/tours/[id]', {
-    //     method: 'GET',
-    // });
-
-    return {city,country}
-
+    return prisma.tour.findUnique({
+      where: {
+        city_country: {
+          city: city,
+          country: country
+        }
+      }
+    })
 }
 
 
-export const createNewTour =async({city, country} :ToursParams ) =>{
-    console.log(" * createNewTour : ",city,country);
-
-    return {city,country};
+//여행 등록
+export const createNewTour =async(tour:TourData) =>{
+    console.log(" * createNewTour : ",tour);
+  return prisma.tour.create({data: tour});    
 }
+
+
+
+//여행 리스트 가져오기
+export const getAllTours =async(searchTerm:string) =>{
+  if(!searchTerm){
+    const tours =await prisma.tour.findMany({
+      orderBy:{
+        city:'asc'
+      }
+    });
+
+    return tours;
+  }
+
+  const tours = await prisma.tour.findMany({
+    where:{
+      OR:[
+        { city:{contains:searchTerm} },
+        { country:{contains:searchTerm} },
+      ]
+    },
+    orderBy:{
+      city:'asc'
+    }
+  });
+
+  return tours;
+}
+
+
+
+export const getSingleTour =async (tourId:string) =>{
+    return prisma.tour.findUnique({where:{id:tourId}});
+
+}
+
 
 
 
