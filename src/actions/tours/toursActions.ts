@@ -179,6 +179,19 @@ export const getSingleTour =async (tourId:string) =>{
 
 
 
+export const generateTourImage = async (city:string, country:string ) => {
+  try {
+    const response = await openai.images.generate({
+      prompt: `Panoramic view of ${city}, ${country}`,
+      n: 1,
+      size: "512x512",
+    });
+    return response?.data[0]?.url || null;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
 
 
 
