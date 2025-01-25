@@ -1,4 +1,5 @@
-import { generateTourImage, getSingleTour, TourData } from '@/actions/tours/toursActions';
+import {  getSingleTour, TourData } from '@/actions/tours/toursActions';
+import { unsplashActionFetchImages } from '@/actions/tours/unsplashAction';
 import TourInfo from '@/components/TourInfo';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -17,8 +18,9 @@ const SingleTourPage:React.FC<SingleTourPageProps> = async ({ params} ) => {
     redirect(`/tours`);
   }
 
-  const tourImage = await generateTourImage(tour.city, tour.country);
-
+  const tourImage =await unsplashActionFetchImages(`${tour.country} ${tour.city}`)
+  //const tourImage = await generateTourImage(tour.city, tour.country);
+  console.log("넥스트 서버에서 받은  tourImage : ",tourImage);
 
   return (
     <div>
