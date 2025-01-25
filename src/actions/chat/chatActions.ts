@@ -26,6 +26,7 @@ export const generateChatResponse = async (chatMessages: GenerateChatResponsePar
       ],
       model: "gpt-3.5-turbo", // 사용할 GPT 모델 지정
       temperature: 0, // 생성 텍스트의 무작위성 조정 (0 = 결정론적)
+      max_tokens:300, // 생성 텍스트의 최대 글자 수
     });
 
     // API 응답 출력 (디버깅 용도)

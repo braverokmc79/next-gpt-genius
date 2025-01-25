@@ -3,7 +3,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { generateChatHuggingFaceResponse } from "@/actions/chat/chatHuggingFaceActions";
+//import { generateChatHuggingFaceResponse } from "@/actions/chat/chatHuggingFaceActions";
+import { generateChatResponse } from "@/actions/chat/chatActions";
 
 // 메시지 타입 정의
 type Message = {
@@ -11,7 +12,7 @@ type Message = {
   content: string;
 };
 
-const AI_TYPE = "DialoGPT-medium";
+//const AI_TYPE = "DialoGPT-medium";
 
 const Chat: React.FC = () => {
   const [text, setText] = useState<string>(""); // 입력 필드 상태
@@ -28,9 +29,11 @@ const Chat: React.FC = () => {
 
   const { mutate, isPending, isError } = useMutation<string | null, Error, Message>({
     mutationFn: async (query) => {
-      const response = await generateChatHuggingFaceResponse([...messages, query]);
-      console.log("API Response: ", response);
-      if (AI_TYPE === "DialoGPT-medium") return response || null;
+      // const response = await generateChatHuggingFaceResponse([...messages, query]);
+      // console.log("API Response: ", response);
+      // if (AI_TYPE === "DialoGPT-medium") return response || null;
+
+      const response = await generateChatResponse([...messages, query]);
       return response?.content || null;
     },
     onSuccess: (response) => {
