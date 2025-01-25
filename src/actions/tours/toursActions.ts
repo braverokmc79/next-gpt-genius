@@ -69,7 +69,8 @@ export const generateTourResponse = async ({ city, country }: ToursParams) : Pro
          해당 ${city}의 인구가 1명 미만이거나, 또는 해당 ${city}가 ${country}에 위치하지 않은 경우,
          아래와 같이 응답하세요:
          { "tour": null }
-      6. 이외의 추가적인 문자는 포함하지 마세요.
+      6. 답변은 한국어로 합니다.
+      7. 이외의 추가적인 문자는 포함하지 마세요.
     `;
   
     try {
@@ -81,6 +82,7 @@ export const generateTourResponse = async ({ city, country }: ToursParams) : Pro
         ],
         model: 'gpt-3.5-turbo', // 사용할 모델 이름 지정 (gpt-4, gpt-3.5-turbo 등)
         temperature: 0,
+        max_tokens:500,
       })) as OpenAIResponse;
   
       // 응답 데이터 검증
