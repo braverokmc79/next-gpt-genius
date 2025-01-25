@@ -12,7 +12,7 @@ const PorfilePage:React.FC = async() => {
   const currentTokens=await fetchOrGenerateTokens(userId);
 
   return (
-    <div className='flex   flex-col items-center'>
+    <div className='flex  flex-col items-center'>
       <h2 className="w-full mb-8 ml-8 text-xl font-extrabold">
             Token Amount: {currentTokens}
       </h2>

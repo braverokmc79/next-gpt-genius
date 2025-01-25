@@ -11,9 +11,13 @@ import {
   TourData,
 } from "@/actions/tours/toursActions";
 import toast from "react-hot-toast";
+import { useAuth } from "@clerk/nextjs";
 
 const NewTour: React.FC = () => {
   const queryClient = useQueryClient();
+  const {userId}  =useAuth();
+
+
 
   const { mutate, isPending, data } = useMutation({
     mutationFn: async (destination: ToursParams) => {
