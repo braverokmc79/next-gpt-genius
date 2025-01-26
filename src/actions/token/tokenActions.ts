@@ -42,7 +42,7 @@ export const fetchOrGenerateTokens = async (clerkId: string): Promise<number> =>
   
 
 //4.토큰 차감 함수
-export const subtractTokens = async (clerkId :string, tokens:number) => {
+export const subtractTokens = async (clerkId :string, tokens:number ) => {
     const result = await prisma.token.update({
       where: { clerkId },
       data: {

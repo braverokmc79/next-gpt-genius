@@ -45,7 +45,7 @@ export interface TourAiResponseData {
 
 export interface GenerateTourResponseData{
   tour: TourData | null;
-  tokens: number | string;
+  tokens: number ;
 }
 
 

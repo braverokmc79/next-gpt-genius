@@ -12,6 +12,7 @@ import {
 } from "@/actions/tours/toursActions";
 import toast from "react-hot-toast";
 import { useAuth } from "@clerk/nextjs";
+import { fetchUserTokensByID, subtractTokens } from "@/actions/token/tokenActions";
 
 const NewTour: React.FC = () => {
   const queryClient = useQueryClient();
@@ -24,17 +25,34 @@ const NewTour: React.FC = () => {
       const existingTour = await getExistingTour(destination);
       if (existingTour) return existingTour;
 
-      const newTour = (await generateTourResponse(destination)) as GenerateTourResponseData;
 
-      if (newTour?.tour) {
-        await createNewTour(newTour.tour);
-        queryClient.invalidateQueries({ queryKey: ["tours"] });
-        return newTour.tour;
-      }
+      if(userId){
+        const currentTokes =await fetchUserTokensByID(userId);
+        if(currentTokes && currentTokes<550){
+          toast.error("현재 보유하고 있는 토큰값이 적습니다.");
+          return;
+        }
 
-      toast.error("일치하는 도시를 찾을 수 없습니다.");
-      return null;
+        
+        const newTour = (await generateTourResponse(destination)) as GenerateTourResponseData;
+
+        if (!newTour || !newTour.tour || !newTour.tokens) {
+          toast.error("일치하는 도시를 찾을 수 없습니다.");
+          return null;
+        }
+
+       
+         await createNewTour(newTour.tour);
+         queryClient.invalidateQueries({ queryKey: ["tours"] });
+        
+         const remainingTokens = await subtractTokens(userId, newTour.tokens);
+         toast.success(`${remainingTokens} 토큰이 남았습니다.`);
+         return newTour.tour;
+        
+        }        
     },
+
+
   });
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
