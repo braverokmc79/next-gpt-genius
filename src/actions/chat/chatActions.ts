@@ -30,10 +30,17 @@ export const generateChatResponse = async (chatMessages: GenerateChatResponsePar
     });
 
     // API 응답 출력 (디버깅 용도)
-    console.log("API Response:", response);
+    //console.log("API Response:", response);
 
-    // 첫 번째 선택 항목의 메시지를 반환하거나 null 반환
-    return response.choices[0].message || null;
+   // 첫 번째 선택 항목의 메시지를 반환하거나 null 반환
+   let totalTokens=0
+   if(response?.usage?.total_tokens){
+     totalTokens=response?.usage?.total_tokens
+   }
+
+   return { message:response.choices[0].message, tokens:totalTokens} ;
+
+
   } catch (error) {
     // 오류 발생 시 로그 출력 및 null 반환
     console.error("generateChatResponse error:", error);

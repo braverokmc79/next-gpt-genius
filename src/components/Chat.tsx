@@ -5,6 +5,9 @@ import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 //import { generateChatHuggingFaceResponse } from "@/actions/chat/chatHuggingFaceActions";
 import { generateChatResponse } from "@/actions/chat/chatActions";
+import { useAuth } from "@clerk/nextjs";
+import { fetchUserTokensByID, subtractTokens } from "@/actions/token/tokenActions";
+
 
 // 메시지 타입 정의
 type Message = {
@@ -15,6 +18,7 @@ type Message = {
 //const AI_TYPE = "DialoGPT-medium";
 
 const Chat: React.FC = () => {
+  const {userId} = useAuth();
   const [text, setText] = useState<string>(""); // 입력 필드 상태
   const [messages, setMessages] = useState<Message[]>([]); // 메시지 목록 상태
 
@@ -28,14 +32,52 @@ const Chat: React.FC = () => {
   }, [messages]);
 
   const { mutate, isPending, isError } = useMutation<string | null, Error, Message>({
-    mutationFn: async (query) => {
-      // const response = await generateChatHuggingFaceResponse([...messages, query]);
-      // console.log("API Response: ", response);
-      // if (AI_TYPE === "DialoGPT-medium") return response || null;
+    
+    mutationFn: async (query: Message): Promise<string | null> => {
+      if (!userId) {
+          toast.error("사용자 정보를 확인할 수 없습니다.");
+          return null; // undefined 대신 null 반환
+      }
+  
+      try {
+          const currentTokens = await fetchUserTokensByID(userId);
+          if (!currentTokens) {
+              toast.error("토큰 정보를 가져오지 못했습니다.");
+              return null; // undefined 대신 null 반환
+          }
+  
+          if (currentTokens < 200) {
+              toast.error("현재 보유하고 있는 토큰값이 적습니다.");
+              return null; // undefined 대신 null 반환
+          }
+  
+          const responseData = await generateChatResponse([...messages, query]);
+          if (!responseData) {
+              toast.error("응답을 생성하지 못했습니다. 잠시 후 다시 시도해주세요.");
+              console.error("Chat response generation failed.");
+              return null; // undefined 대신 null 반환
+          }
+  
+          const { message, tokens } = responseData;
+          console.log("API Response && : ", tokens, message);
+  
+          const remainingTokens = await subtractTokens(userId, tokens);
+          if (remainingTokens === null || remainingTokens === undefined) {
+              toast.error("토큰 차감에 실패했습니다.");
+              console.error("Token subtraction failed.");
+              return null; // undefined 대신 null 반환
+          }
+  
+          toast.success(`${remainingTokens} 토큰이 남았습니다.`);
+          return message?.content || null; // 항상 null 또는 string 반환
+      } catch (error) {
+          console.error("Unexpected error in mutationFn:", error);
+          toast.error("처리 중 문제가 발생했습니다.");
+          return null; // undefined 대신 null 반환
+      }
+  },
+  
 
-      const response = await generateChatResponse([...messages, query]);
-      return response?.content || null;
-    },
     onSuccess: (response) => {
       if (!response) {
         toast.error("Something went wrong...");

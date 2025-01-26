@@ -50,7 +50,7 @@ const NewTour: React.FC = () => {
          return newTour.tour;
         
         }        
-    },
+     },
 
 
   });
